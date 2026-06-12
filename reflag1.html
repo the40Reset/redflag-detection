@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>RedFlag Detection</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;background:#1A0606;font-family:'DM Sans',sans-serif;color:#FFFFFF;}
+.page{min-height:100vh;display:flex;flex-direction:column;padding:48px 28px 40px;max-width:480px;margin:0 auto;}
+.brand{font-size:13px;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:#FFFFFF;margin-bottom:52px;}
+.headline{font-family:'DM Serif Display',serif;font-size:30px;color:#FFFFFF;line-height:1.3;margin-bottom:20px;}
+.subtext{font-size:17px;color:#D4A8A8;line-height:1.85;margin-bottom:36px;flex:1;font-weight:400;}
+.step-hint{font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#8B3333;margin-bottom:20px;}
+.btn{width:100%;border:none;border-radius:14px;padding:18px 24px;font-family:'DM Sans',sans-serif;font-size:17px;font-weight:700;cursor:pointer;margin-bottom:12px;display:block;text-align:center;}
+.btn-main{background:#8B1A1A;color:#FFFFFF;}
+.btn-white{background:#FFFFFF;color:#8B1A1A;}
+.btn-ghost{background:transparent;color:#8B4040;border:1px solid #4A1515;font-size:15px;font-weight:500;}
+.pw-wrap{margin-bottom:20px;flex:1;display:flex;flex-direction:column;justify-content:center;gap:16px;}
+.pw-input{width:100%;background:#2A0D0D;border:1px solid #4A1515;border-radius:14px;padding:18px 20px;font-family:'DM Sans',sans-serif;font-size:18px;font-weight:700;color:#FFFFFF;outline:none;text-align:center;}
+.pw-input::placeholder{color:#5A2E2E;letter-spacing:1px;font-weight:400;font-size:15px;}
+.pw-error{font-size:15px;color:#FF6B6B;text-align:center;font-weight:600;display:none;}
+.cards{flex:1;display:flex;flex-direction:column;gap:12px;margin-top:8px;}
+.card{background:#2A0D0D;border:1px solid #4A1515;border-radius:16px;padding:22px 20px;cursor:pointer;}
+.card-title{font-family:'DM Serif Display',serif;font-size:20px;color:#FFFFFF;margin-bottom:6px;}
+.card-sub{font-size:14px;color:#8B5050;line-height:1.5;}
+.progress-wrap{margin-bottom:32px;}
+.progress-track{height:3px;background:#2A0D0D;border-radius:3px;}
+.progress-fill{height:3px;background:#C0392B;border-radius:3px;transition:width 0.4s;}
+.progress-label{font-size:13px;color:#6A3030;font-weight:600;margin-top:8px;}
+.cat-label{font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#C0392B;margin-bottom:14px;}
+.q-text{font-family:'DM Serif Display',serif;font-size:22px;color:#FFFFFF;line-height:1.4;margin-bottom:12px;}
+.q-hint{font-size:15px;color:#9A6060;line-height:1.75;margin-bottom:24px;font-weight:400;}
+.freq-list{display:flex;flex-direction:column;gap:10px;margin-bottom:20px;}
+.freq-item{background:#2A0D0D;border:1px solid #4A1515;border-radius:14px;padding:17px 18px;display:flex;align-items:center;gap:14px;cursor:pointer;}
+.freq-item.sel{background:#3D0A0A;border-color:#C0392B;}
+.freq-dot{width:14px;height:14px;border-radius:50%;border:2px solid #5A2020;flex-shrink:0;}
+.freq-item.sel .freq-dot{background:#C0392B;border-color:#C0392B;}
+.freq-text{font-size:16px;color:#C0A0A0;font-weight:500;}
+.freq-item.sel .freq-text{color:#FFFFFF;font-weight:700;}
+.result-flags{display:flex;justify-content:center;gap:7px;margin:16px 0 10px;flex-wrap:wrap;}
+.flag{width:14px;height:20px;border-radius:3px;}
+.flag.on{background:#C0392B;}
+.flag.off{background:#3A1010;}
+.result-level{font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;text-align:center;margin-bottom:16px;}
+.level-low{color:#7AAA7A;}
+.level-mid{color:#E6B800;}
+.level-high{color:#C0392B;}
+.result-title{font-family:'DM Serif Display',serif;font-size:26px;color:#FFFFFF;text-align:center;line-height:1.35;margin-bottom:20px;}
+.result-box{background:#2A0D0D;border:1px solid #4A1515;border-radius:16px;padding:22px 20px;margin-bottom:20px;}
+.result-box p{font-size:16px;color:#D4A8A8;line-height:1.85;text-align:center;}
+.share-text{font-size:14px;color:#5A3030;text-align:center;line-height:1.65;font-weight:500;margin-top:12px;}
+.hidden{display:none!important;}
+.jeda-center{flex:1;display:flex;flex-direction:column;justify-content:center;text-align:center;}
+</style>
+</head>
+<body>
+
+<!-- LANDING AWAL -->
+<div class="page" id="s-intro">
+  <div class="brand">REDFLAG</div>
+  <div class="headline">Lo punya firasat.<br>Dan firasat itu nggak pergi-pergi.</div>
+  <div class="subtext">Sudah berapa lama lo coba abaikan sesuatu yang terus lo rasain?<br><br>RedFlag Detection bukan untuk menghakimi. Ini untuk melihat dengan jelas — apa yang selama ini lo hindari untuk diakui.</div>
+  <button class="btn btn-main" onclick="go('s-password')">Masuk dengan Kode Akses</button>
+</div>
+
+<!-- PASSWORD -->
+<div class="page hidden" id="s-password">
+  <div class="brand">REDFLAG</div>
+  <div class="headline">Masukkan kode akses lo.</div>
+  <div class="pw-wrap">
+    <input class="pw-input" type="text" id="pw-input" placeholder="kode akses lo di sini" autocomplete="off" autocorrect="off" autocapitalize="off">
+    <div class="pw-error" id="pw-error">Kode akses salah. Coba lagi.</div>
+  </div>
+  <button class="btn btn-main" onclick="checkPassword()">Lanjut</button>
+</div>
+
+<!-- LANDING DALAM -->
+<div class="page hidden" id="s-land">
+  <div class="brand">REDFLAG</div>
+  <div class="headline">Lo buka ini bukan karena iseng.</div>
+  <div class="subtext">Ada yang udah lama lo rasain. Tapi belum pernah berani lo akui — bahkan ke diri sendiri.<br><br>Ini bukan untuk menghakimi.<br>Ini untuk melihat dengan jelas.</div>
+  <button class="btn btn-main" onclick="go('s-gender')">Iya. Mulai Deteksi.</button>
+  <button class="btn btn-ghost" onclick="go('s-gender')">Cuma mau lihat-lihat dulu</button>
+</div>
+
+<!-- GENDER -->
+<div class="page hidden" id="s-gender">
+  <div class="brand">REDFLAG</div>
+  <div class="step-hint">Langkah 1 dari 2</div>
+  <div class="headline">Lo siapa?</div>
+  <div class="cards">
+    <div class="card" onclick="setGender('f')">
+      <div class="card-title">Gue perempuan</div>
+      <div class="card-sub">dan ada yang aneh dengan pasangan gue</div>
+    </div>
+    <div class="card" onclick="setGender('m')">
+      <div class="card-title">Gue laki-laki</div>
+      <div class="card-sub">dan ada yang nggak masuk akal</div>
+    </div>
+  </div>
+</div>
+
+<!-- STATUS -->
+<div class="page hidden" id="s-status">
+  <div class="brand">REDFLAG</div>
+  <div class="step-hint">Langkah 2 dari 2</div>
+  <div class="headline">Status hubungan lo?</div>
+  <div class="cards">
+    <div class="card" onclick="setStatus('married')">
+      <div class="card-title">Sudah menikah</div>
+      <div class="card-sub">pasangan yang sah secara hukum atau agama</div>
+    </div>
+    <div class="card" onclick="setStatus('dating')">
+      <div class="card-title">Pacaran / belum menikah</div>
+      <div class="card-sub">hubungan yang sedang berjalan</div>
+    </div>
+  </div>
+</div>
+
+<!-- PERTANYAAN -->
+<div class="page hidden" id="s-question">
+  <div class="brand">REDFLAG</div>
+  <div class="progress-wrap">
+    <div class="progress-track"><div class="progress-fill" id="pbar"></div></div>
+    <div class="progress-label" id="progress-label">1 dari 15</div>
+  </div>
+  <div class="cat-label" id="q-cat"></div>
+  <div class="q-text" id="q-text"></div>
+  <div class="q-hint" id="q-hint"></div>
+  <div class="freq-list">
+    <div class="freq-item" onclick="pick(this,0)"><span class="freq-dot"></span><span class="freq-text">Nggak pernah kayak gitu</span></div>
+    <div class="freq-item" onclick="pick(this,1)"><span class="freq-dot"></span><span class="freq-text">Kadang — bisa jadi kebetulan</span></div>
+    <div class="freq-item" onclick="pick(this,2)"><span class="freq-dot"></span><span class="freq-text">Sering — dan gue udah notice</span></div>
+    <div class="freq-item" onclick="pick(this,3)"><span class="freq-dot"></span><span class="freq-text">Selalu — ini udah jadi pola</span></div>
+  </div>
+  <button class="btn btn-main" onclick="nextQ()">Lanjut</button>
+</div>
+
+<!-- JEDA -->
+<div class="page hidden" id="s-jeda">
+  <div class="brand">REDFLAG</div>
+  <div class="jeda-center">
+    <div class="headline">Lo udah jawab semuanya.</div>
+    <div class="subtext" style="flex:0;margin-top:16px;">Tarik napas dulu.<br>Hasil deteksi lo siap.</div>
+  </div>
+  <button class="btn btn-main" onclick="showResult()">Lihat Hasilnya</button>
+</div>
+
+<!-- HASIL -->
+<div class="page hidden" id="s-result">
+  <div class="brand">REDFLAG</div>
+  <div class="result-flags" id="result-flags"></div>
+  <div class="result-level" id="result-level"></div>
+  <div class="result-title" id="result-title"></div>
+  <div class="result-box"><p id="result-body"></p></div>
+  <div style="flex:1;"></div>
+  <button class="btn btn-white" id="result-cta" onclick="go('s-land')"></button>
+  <div class="share-text" id="share-text"></div>
+</div>
+
+<script>
+var CORRECT_HASH = '5cdacc0f';
+
+function simpleHash(s) {
+  var h = 0;
+  for (var i = 0; i < s.length; i++) {
+    var c = s.charCodeAt(i);
+    h = ((h << 5) - h) + c;
+    h = h | 0;
+  }
+  return Math.abs(h).toString(16);
+}
+
+function checkPassword() {
+  var val = document.getElementById('pw-input').value.trim().toLowerCase();
+  var err = document.getElementById('pw-error');
+  if (simpleHash(val) === CORRECT_HASH) {
+    err.style.display = 'none';
+    go('s-land');
+  } else {
+    err.style.display = 'block';
+    document.getElementById('pw-input').value = '';
+  }
+}
+
+document.getElementById('pw-input').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') checkPassword();
+});
+
+var gender = 'f', status = 'married';
+var questions = [
+  {cat:'Penampilan & Perilaku', text:'Dia lebih rapi dan wangi kalau mau keluar sendiri — tapi biasa aja kalau sama lo?', hint:'Bukan soal dia mau tampil. Tapi soal untuk siapa.'},
+  {cat:'Penampilan & Perilaku', text:'Ada baju, aksesoris, atau parfum baru yang nggak pernah diceritain belinya kapan dan untuk apa?', hint:'Yang dibeli untuk siapa — tapi nggak pernah dipakai di depan lo.'},
+  {cat:'Penampilan & Perilaku', text:'Dia tiba-tiba rajin gym, perawatan, atau jaga penampilan tanpa alasan yang jelas?', hint:'Motivasi tiba-tiba yang nggak ada konteksnya — itu sinyal.'},
+  {cat:'Penampilan & Perilaku', text:'Sikapnya ke lo berubah — tiba-tiba terlalu manis, atau justru makin dingin dan jauh?', hint:'Dua-duanya bisa jadi kompensasi dari sesuatu yang disembunyiin.'},
+  {cat:'HP & Digital', text:'HP-nya sekarang nggak pernah lepas dari tangan, layar selalu menghadap bawah kalau lo mendekat?', hint:'HP yang dulu sering ketinggalan — sekarang kayak bagian dari tubuhnya.'},
+  {cat:'HP & Digital', text:'Ada aplikasi baru di HP-nya yang nggak ada penjelasannya — Telegram, Signal, atau Line kedua?', hint:'Aplikasi yang memang dirancang untuk menyembunyikan percakapan.'},
+  {cat:'HP & Digital', text:'Notifikasi HP-nya tiba-tiba dibungkam semua, atau password diganti tanpa dikasih tau?', hint:'Akses yang dulu terbuka — sekarang ditutup.'},
+  {cat:'HP & Digital', text:'Ada nama yang selalu muncul di story Instagram paling depan, atau konsisten di-like tiap postingan?', hint:'Instagram menempatkan orang yang paling sering berinteraksi di urutan pertama.'},
+  {cat:'Waktu & Alibi', text:'Sering nggak bisa dihubungi di jam-jam tertentu yang konsisten — dan alasannya selalu sama?', hint:'Bukan sekali dua kali. Tapi polanya konsisten di hari dan jam yang sama.'},
+  {cat:'Waktu & Alibi', text:'Pulang telat tapi penjelasannya terlalu rapi — atau justru terlalu singkat dan datar?', hint:'Orang yang jujur ceritanya natural. Yang bohong — terlalu detail atau terlalu datar.'},
+  {cat:'Waktu & Alibi', text:'Alibinya pernah nggak konsisten kalau diceritain ulang di lain waktu?', hint:'Nama yang disebut berubah. Tempatnya berbeda. Detail yang nggak nyambung.'},
+  {cat:'Waktu & Alibi', text:'Lo pernah verifikasi ke orang ketiga — dan ada yang nggak nyambung sama ceritanya?', hint:'Teman yang katanya hadir — nggak tau ada acara itu.'},
+  {cat:'Pola Khusus', text:'Dia sering tanya jadwal lo secara detail — tapi kalau lo tanya dia ada di mana, jawabannya singkat?', hint:'Dia butuh tau lo di mana. Supaya aman bergerak.'},
+  {cat:'Pola Khusus', text:'Ada pengeluaran yang nggak bisa dijelaskan — GoPay sering di-top up sendiri, atau bon dari tempat yang nggak dikenal?', hint:'Uang meninggalkan jejak. Dan jejak itu susah dihapus.'},
+  {cat:'Pola Khusus', text:'Insting lo udah berkali-kali bilang ada yang nggak beres — bahkan sebelum lo mulai cari bukti apapun?', hint:'Insting itu bukan paranoia. Itu lo yang sedang melindungi diri lo sendiri.'}
+];
+
+var current = 0, scores = [], selectedScore = -1;
+
+function setGender(g) { gender = g; go('s-status'); }
+function setStatus(s) { status = s; startDetection(); }
+
+function startDetection() {
+  current = 0; scores = []; selectedScore = -1;
+  loadQuestion();
+  go('s-question');
+}
+
+function loadQuestion() {
+  var q = questions[current];
+  document.getElementById('q-cat').textContent = q.cat;
+  document.getElementById('q-text').textContent = '\u201c' + q.text + '\u201d';
+  document.getElementById('q-hint').textContent = q.hint;
+  document.getElementById('pbar').style.width = ((current + 1) / 15 * 100) + '%';
+  document.getElementById('progress-label').textContent = (current + 1) + ' dari 15';
+  document.querySelectorAll('.freq-item').forEach(function(x) { x.classList.remove('sel'); });
+  selectedScore = -1;
+}
+
+function pick(el, val) {
+  document.querySelectorAll('.freq-item').forEach(function(x) { x.classList.remove('sel'); });
+  el.classList.add('sel');
+  selectedScore = val;
+}
+
+function nextQ() {
+  if (selectedScore < 0) return;
+  scores.push(selectedScore);
+  if (current < 14) { current++; loadQuestion(); window.scrollTo(0,0); }
+  else { go('s-jeda'); }
+}
+
+function showResult() {
+  var total = scores.reduce(function(a, b) { return a + b; }, 0);
+  var flagCount = scores.filter(function(s) { return s >= 2; }).length;
+
+  var flagsEl = document.getElementById('result-flags');
+  flagsEl.innerHTML = '';
+  for (var i = 0; i < 15; i++) {
+    var f = document.createElement('div');
+    f.className = 'flag ' + (i < flagCount ? 'on' : 'off');
+    flagsEl.appendChild(f);
+  }
+
+  var level, levelClass, title, body, cta, share;
+  if (total <= 15) {
+    level = 'Belum Ada Pola Yang Jelas'; levelClass = 'level-low';
+    title = 'Tenang dulu. Tapi tetap perhatiin.';
+    body = 'Sejauh ini belum ada pola yang konsisten. Tapi yang bawa lo ke sini — itu bukan kebetulan. Lo berhak punya kepastian, bukan cuma ketenangan semu.';
+    cta = 'Pelajari cara membaca tanda-tandanya \u2192';
+    share = 'Gue cek dan ada ' + flagCount + ' hal yang perlu gue perhatiin. Lo berani cek punya lo?';
+  } else if (total <= 28) {
+    level = 'Ada Pola Yang Perlu Ditelusuri'; levelClass = 'level-mid';
+    title = 'Ini bukan paranoia.\nIni data.';
+    body = 'Ada beberapa pola yang lo konfirmasi sendiri — bukan dari orang lain, dari lo. Sekarang lo butuh cara yang tepat untuk verifikasi. Tanpa ketahuan, tanpa drama, tanpa salah langkah.';
+    cta = 'Gue butuh panduan lapangannya \u2192';
+    share = 'Gue baru tau ada ' + flagCount + ' red flag. Lo berani cek punya lo?';
+  } else {
+    level = 'Sinyal Kuat Terdeteksi'; levelClass = 'level-high';
+    title = 'Lo udah lama tau.\nLo cuma belum berani akui.';
+    body = 'Ada ' + flagCount + ' pola yang lo konfirmasi sendiri. Itu bukan kebetulan. Lo berhak tau kebenarannya — dan lo berhak bergerak dengan cara yang tepat. Diam-diam. Tanpa salah langkah.';
+    cta = 'Lihat panduan lapangan lengkapnya \u2192';
+    share = 'Gue baru tau ada ' + flagCount + ' red flag di hubungan gue. Lo berani jujur sama diri lo sendiri?';
+  }
+
+  document.getElementById('result-level').textContent = level;
+  document.getElementById('result-level').className = 'result-level ' + levelClass;
+  document.getElementById('result-title').textContent = title;
+  document.getElementById('result-body').textContent = body;
+  document.getElementById('result-cta').textContent = cta;
+  document.getElementById('share-text').textContent = share;
+  go('s-result');
+}
+
+var allScreens = ['s-intro','s-password','s-land','s-gender','s-status','s-question','s-jeda','s-result'];
+function go(id) {
+  allScreens.forEach(function(s) {
+    document.getElementById(s).classList.toggle('hidden', s !== id);
+  });
+  window.scrollTo(0, 0);
+}
+</script>
+</body>
+</html>
